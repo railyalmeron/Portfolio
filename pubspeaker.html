@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PubSpeaker — Case Study</title>
+  <link rel="icon" type="image/png" href="boy.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── LIGHT MODE (default) ─── */
+    :root, [data-theme="light"] {
+      --cs-bg: #f4f3f8;
+      --cs-surface: #ffffff;
+      --cs-border: rgba(0,0,0,.08);
+      --cs-text: #1a1a2e;
+      --cs-muted: rgba(0,0,0,.5);
+      --cs-label: rgba(0,0,0,.35);
+      --cs-accent: #7B2FBE;
+      --cs-accent-light: #c084fc;
+      --cs-accent-bg: rgba(123,47,190,.08);
+      --cs-accent-border: rgba(123,47,190,.2);
+      --cs-card-bg: rgba(0,0,0,.03);
+      --cs-card-border: rgba(0,0,0,.07);
+      --cs-card-hover: rgba(0,0,0,.06);
+      --cs-divider: rgba(0,0,0,.08);
+      --cs-pill-bg: rgba(0,0,0,.05);
+      --cs-pill-text: rgba(0,0,0,.6);
+      --cs-pill-border: rgba(0,0,0,.1);
+      --nav-bg: rgba(244,243,248,.88);
+      --nav-border: rgba(0,0,0,.08);
+      --tag-neutral-bg: rgba(0,0,0,.05);
+      --tag-neutral-text: rgba(0,0,0,.5);
+      --tag-neutral-border: rgba(0,0,0,.1);
+      --toggle-bg: rgba(0,0,0,.05);
+      --toggle-border: rgba(0,0,0,.12);
+      --toggle-icon: #1a1a2e;
+      --back-btn-bg: rgba(0,0,0,.04);
+      --back-btn-border: rgba(0,0,0,.12);
+      --back-btn-text: rgba(0,0,0,.6);
+      --nav-link: rgba(0,0,0,.6);
+      --cs-heading: #1a1a2e;
+    }
+
+    /* ─── DARK MODE ─── */
+    [data-theme="dark"] {
+      --cs-bg: #0a0a10;
+      --cs-surface: #111118;
+      --cs-border: rgba(255,255,255,.06);
+      --cs-text: #e8e8f0;
+      --cs-muted: rgba(255,255,255,.4);
+      --cs-label: rgba(255,255,255,.25);
+      --cs-accent: #7B2FBE;
+      --cs-accent-light: #c084fc;
+      --cs-accent-bg: rgba(123,47,190,.2);
+      --cs-accent-border: rgba(123,47,190,.4);
+      --cs-card-bg: rgba(255,255,255,.04);
+      --cs-card-border: rgba(255,255,255,.07);
+      --cs-card-hover: rgba(255,255,255,.07);
+      --cs-divider: rgba(255,255,255,.07);
+      --cs-pill-bg: rgba(255,255,255,.06);
+      --cs-pill-text: rgba(255,255,255,.6);
+      --cs-pill-border: rgba(255,255,255,.1);
+      --nav-bg: rgba(10,10,16,.88);
+      --nav-border: rgba(255,255,255,.07);
+      --tag-neutral-bg: rgba(255,255,255,.06);
+      --tag-neutral-text: rgba(255,255,255,.55);
+      --tag-neutral-border: rgba(255,255,255,.1);
+      --toggle-bg: rgba(255,255,255,.06);
+      --toggle-border: rgba(255,255,255,.12);
+      --toggle-icon: #e8e8f0;
+      --back-btn-bg: rgba(255,255,255,.05);
+      --back-btn-border: rgba(255,255,255,.15);
+      --back-btn-text: rgba(255,255,255,.7);
+      --nav-link: rgba(255,255,255,.7);
+      --cs-heading: #ffffff;
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal { opacity:0; transform:translateY(36px); transition:opacity .9s cubic-bezier(.22,.68,0,1.1), transform .9s cubic-bezier(.22,.68,0,1.1); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-left { opacity:0; transform:translateX(-40px); transition:opacity .9s cubic-bezier(.22,.68,0,1.1), transform .9s cubic-bezier(.22,.68,0,1.1); }
+    .reveal-left.visible { opacity:1; transform:translateX(0); }
+    .reveal-right { opacity:0; transform:translateX(40px); transition:opacity .9s cubic-bezier(.22,.68,0,1.1), transform .9s cubic-bezier(.22,.68,0,1.1); }
+    .reveal-right.visible { opacity:1; transform:translateX(0); }
+    .delay-1 { transition-delay:.1s; } .delay-2 { transition-delay:.2s; }
+    .delay-3 { transition-delay:.3s; } .delay-4 { transition-delay:.4s; }
+
+    /* ─── BASE ─── */
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--cs-bg); color:var(--cs-text); font-family:'Inter',sans-serif; font-size:16px; line-height:1.6; min-height:100vh; transition:background .35s, color .35s; }
+
+    /* ─── NAV ─── */
+    nav {
+      position:sticky; top:0; z-index:100;
+      background:var(--nav-bg);
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--nav-border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 44px; height:62px;
+      transition:background .35s, border-color .35s;
+    }
+    .nav-logo { text-decoration:none; display:flex; align-items:center; }
+    .nav-logo-img { width:42px; height:42px; border-radius:8px; object-fit:cover; display:block; border:2px solid var(--cs-border); }
+    .logo-box-fallback {
+      width:42px; height:42px; border:2px solid var(--cs-border);
+      display:grid; place-items:center; position:relative;
+      font-family:'Syne',sans-serif; font-weight:800; color:var(--cs-text); overflow:hidden;
+    }
+    .logo-box-fallback .logo-r { position:absolute; left:7px; top:50%; transform:translateY(-50%); font-style:italic; font-size:15px; }
+    .logo-box-fallback .logo-slash { position:absolute; width:1.5px; height:28px; background:var(--cs-text); transform:rotate(18deg); left:22px; }
+    .logo-box-fallback .logo-a { position:absolute; right:7px; top:50%; transform:translateY(-50%); font-size:12px; }
+
+    .nav-links { display:flex; align-items:center; gap:28px; list-style:none; }
+    .nav-links a { text-decoration:none; color:var(--nav-link); font-size:14px; font-weight:400; transition:color .2s; }
+    .nav-links a:hover { color:var(--cs-text); }
+
+    .nav-right { display:flex; align-items:center; gap:10px; }
+
+    .theme-toggle {
+      width:40px; height:40px; background:var(--toggle-bg); border:1.5px solid var(--toggle-border);
+      border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer;
+      transition:background .35s, border-color .35s, transform .2s, box-shadow .2s; flex-shrink:0;
+    }
+    .theme-toggle:hover { transform:scale(1.08); box-shadow:0 4px 14px rgba(0,0,0,.15); }
+    .theme-toggle svg { width:18px; height:18px; fill:var(--toggle-icon); stroke:none; transition:fill .35s; }
+    /* In light mode → show moon (click to go dark) */
+    .icon-sun { display:none; }
+    .icon-moon { display:block; }
+    [data-theme="dark"] .icon-sun { display:block; }
+    [data-theme="dark"] .icon-moon { display:none; }
+
+    .nav-back {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 18px; border-radius:50px; font-size:13px; font-weight:600;
+      color:var(--back-btn-text); border:1.5px solid var(--back-btn-border);
+      text-decoration:none; background:var(--back-btn-bg);
+      transition:background .2s, color .2s, border-color .2s, transform .15s;
+    }
+    .nav-back:hover { background:var(--cs-accent-bg); color:var(--cs-accent); border-color:var(--cs-accent-border); transform:translateY(-1px); }
+    .nav-back svg { width:14px; height:14px; fill:currentColor; }
+
+    /* ─── HERO ─── */
+    .cs-hero { width:100%; padding:72px 44px 0; display:flex; flex-direction:column; align-items:center; gap:32px; }
+    .cs-hero-meta { display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center; }
+    .cs-tag {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:5px 14px; border-radius:50px; font-size:12px; font-weight:600;
+      letter-spacing:.04em; text-transform:uppercase;
+      background:var(--cs-accent-bg); color:var(--cs-accent);
+      border:1px solid var(--cs-accent-border);
+    }
+    .cs-tag-edu {
+      background:var(--tag-neutral-bg); color:var(--tag-neutral-text);
+      border:1px solid var(--tag-neutral-border);
+    }
+    .cs-hero-title {
+      font-family:'Syne',sans-serif; font-weight:800;
+      font-size:clamp(36px,6vw,72px); text-align:center; line-height:1.05;
+      color:var(--cs-heading); letter-spacing:-.02em;
+    }
+    .cs-hero-sub { font-size:16px; color:var(--cs-muted); text-align:center; max-width:540px; line-height:1.7; }
+    .cs-hero-cta {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:13px 28px; border-radius:50px; font-size:14px; font-weight:600;
+      background:linear-gradient(135deg,#7B2FBE,#5a1a9a);
+      color:#fff; text-decoration:none; border:none; cursor:pointer;
+      transition:transform .15s, box-shadow .2s, opacity .2s;
+      box-shadow:0 8px 28px rgba(123,47,190,.35);
+    }
+    .cs-hero-cta:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(123,47,190,.5); opacity:.9; }
+    .cs-hero-cta svg { width:15px; height:15px; fill:currentColor; }
+
+    /* ─── PREVIEW FRAME ─── */
+    .cs-preview-wrap { width:100%; max-width:900px; margin:48px auto 0; padding:0 44px; }
+    .cs-preview-frame {
+      border-radius:20px; overflow:hidden;
+      border:1px solid var(--cs-border);
+      box-shadow:0 24px 80px rgba(123,47,190,.15), 0 0 0 1px var(--cs-border);
+      background:linear-gradient(135deg,#7B2FBE 0%,#4A1580 100%);
+      min-height:460px; display:flex; align-items:center; justify-content:center; position:relative;
+    }
+    .cs-preview-frame img.preview-img {
+      width:100%; height:100%; object-fit:cover; object-position:center top;
+      position:absolute; top:0; left:0; display:block; border-radius:20px;
+    }
+    .cs-preview-fallback { display:flex; flex-direction:column; align-items:center; gap:20px; position:relative; z-index:1; padding:60px 40px; }
+    .cs-preview-fallback .phone-mockup {
+      width:140px; height:260px; border:3px solid rgba(255,255,255,.25); border-radius:28px;
+      background:rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center;
+      box-shadow:0 20px 60px rgba(0,0,0,.4);
+    }
+    .cs-preview-fallback .phone-mockup svg { width:40px; height:40px; stroke:rgba(255,255,255,.4); fill:none; stroke-width:1.5; }
+    .cs-preview-fallback span { color:rgba(255,255,255,.35); font-size:13px; letter-spacing:.05em; text-transform:uppercase; }
+
+    /* ─── CONTENT LAYOUT ─── */
+    .cs-content { max-width:900px; margin:0 auto; padding:72px 44px 96px; }
+    .cs-two-col { display:grid; grid-template-columns:1fr 320px; gap:64px; align-items:start; }
+
+    /* ─── BODY TEXT ─── */
+    .cs-body h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(22px,3vw,30px); color:var(--cs-heading); margin-bottom:16px; line-height:1.2; }
+    .cs-body p { font-size:15.5px; color:var(--cs-muted); line-height:1.8; margin-bottom:24px; }
+    .cs-body p:last-child { margin-bottom:0; }
+    .cs-divider { border:none; border-top:1px solid var(--cs-divider); margin:40px 0; }
+
+    /* ─── TAGS ─── */
+    .cs-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
+    .cs-pill {
+      padding:6px 15px; border-radius:50px; font-size:12.5px; font-weight:600;
+      background:var(--cs-pill-bg); color:var(--cs-pill-text);
+      border:1px solid var(--cs-pill-border); letter-spacing:.02em;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .cs-sidebar { display:flex; flex-direction:column; gap:0; }
+    .cs-meta-block { padding:24px 0; border-bottom:1px solid var(--cs-divider); }
+    .cs-meta-block:last-child { border-bottom:none; }
+    .cs-meta-label { font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--cs-label); margin-bottom:8px; }
+    .cs-meta-value { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--cs-heading); }
+
+    /* ─── FEATURE CARDS ─── */
+    .cs-features { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px; }
+    .cs-feature-card {
+      background:var(--cs-card-bg); border:1px solid var(--cs-card-border);
+      border-radius:16px; padding:24px 20px;
+      transition:background .2s, border-color .2s, transform .2s;
+    }
+    .cs-feature-card:hover { background:var(--cs-card-hover); border-color:var(--cs-accent-border); transform:translateY(-2px); }
+    .cs-feature-icon {
+      width:40px; height:40px; border-radius:10px;
+      background:var(--cs-accent-bg); display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+    }
+    .cs-feature-icon svg { width:20px; height:20px; fill:var(--cs-accent); }
+    .cs-feature-card h4 { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--cs-heading); margin-bottom:6px; }
+    .cs-feature-card p { font-size:13px; color:var(--cs-muted); line-height:1.6; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width:768px) {
+      nav { padding:0 20px; } .nav-links { display:none; }
+      .cs-hero { padding:48px 20px 0; } .cs-preview-wrap { padding:0 20px; }
+      .cs-preview-frame { min-height:260px; } .cs-content { padding:48px 20px 72px; }
+      .cs-two-col { grid-template-columns:1fr; gap:40px; } .cs-features { grid-template-columns:1fr; }
+    }
+    @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo" aria-label="Home">
+      <img src="logo.png" alt="Raily Almeron logo" class="nav-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+      <div class="logo-box-fallback" style="display:none;">
+        <span class="logo-r">R</span><span class="logo-slash"></span><span class="logo-a">A</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#techstack">Tech Stack</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="index.html#contact-footer">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="12" y1="21" x2="12" y2="23" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="1" y1="12" x2="3" y2="12" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="21" y1="12" x2="23" y2="12" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke-width="2" stroke-linecap="round" stroke="currentColor"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke-width="2" stroke-linecap="round" stroke="currentColor"/></svg>
+        </button>
+      </li>
+    </ul>
+    <div class="nav-right">
+      <a href="index.html#projects" class="nav-back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Back to Projects
+      </a>
+    </div>
+  </nav>
+
+  <section class="cs-hero">
+    <div class="cs-hero-meta reveal">
+      <span class="cs-tag">Case Study 01</span>
+      <span class="cs-tag cs-tag-edu">🎓 Education</span>
+      <span class="cs-tag cs-tag-edu">📱 Mobile App</span>
+    </div>
+    <h1 class="cs-hero-title reveal delay-1">PubSpeaker</h1>
+    <p class="cs-hero-sub reveal delay-2">An AI-driven mobile app that helps users become better public speakers through real-time feedback and progress tracking.</p>
+    <a href="https://drive.google.com/file/d/1iQetQP3-VNjQ8vmks5sNSJrSmk0CGKCz/view?usp=sharing"
+       target="_blank" rel="noopener noreferrer" class="cs-hero-cta reveal delay-3">
+      Get The App
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg>
+    </a>
+  </section>
+
+  <div class="cs-preview-wrap">
+    <div class="cs-preview-frame reveal">
+      <img src="project-pubspeaker.png" alt="PubSpeaker app preview" class="preview-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <div class="cs-preview-fallback" style="display:none;">
+        <div class="phone-mockup">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </div>
+        <span>App Preview</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-content">
+    <div class="cs-two-col">
+      <div class="cs-body">
+        <div class="reveal">
+          <h2>About the Project</h2>
+          <p>PubSpeaker is a speech analysis and feedback application designed to help users improve their public speaking and pronunciation skills. The app transcribes spoken input into text, analyzes pronunciation, grammar, and fluency, and highlights errors or areas for improvement.</p>
+          <p>Users can review past speech results through a history feature, allowing them to reread transcripts or replay their recorded speech for self-evaluation. The goal is to give anyone — from students to professionals — a private, judgment-free tool to practice and grow their communication confidence.</p>
+        </div>
+        <hr class="cs-divider" />
+        <div class="reveal delay-1">
+          <h2>The Challenge</h2>
+          <p>Public speaking anxiety affects a huge number of people, yet most practice tools are either too expensive, require a human coach, or lack real-time actionable feedback. The challenge was to build a lightweight mobile experience that feels encouraging and personal — not clinical or intimidating.</p>
+          <p>We also needed to handle the complexity of real-time speech transcription and AI-generated feedback within a React Native environment, ensuring the app remained fast and responsive on Android.</p>
+        </div>
+        <hr class="cs-divider" />
+        <div class="reveal delay-2"><h2>Key Features</h2></div>
+        <div class="cs-features">
+          <div class="cs-feature-card reveal delay-1">
+            <div class="cs-feature-icon"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg></div>
+            <h4>Real-Time Transcription</h4>
+            <p>Converts speech to text instantly as the user speaks, with minimal latency.</p>
+          </div>
+          <div class="cs-feature-card reveal delay-2">
+            <div class="cs-feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+            <h4>AI-Driven Feedback</h4>
+            <p>Analyzes grammar, fluency, and pronunciation, providing personalized suggestions for improvement.</p>
+          </div>
+          <div class="cs-feature-card reveal delay-3">
+            <div class="cs-feature-icon"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg></div>
+            <h4>Session History</h4>
+            <p>Users can revisit past sessions, review transcripts, and track their progress over time.</p>
+          </div>
+          <div class="cs-feature-card reveal delay-4">
+            <div class="cs-feature-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+            <h4>User Profiles</h4>
+            <p>Personalized profiles to store preferences, session data, and improvement milestones.</p>
+          </div>
+        </div>
+        <hr class="cs-divider" />
+        <div class="reveal delay-1">
+          <h2>Tech Stack</h2>
+          <p>Built with a cross-platform approach to ensure consistent performance on Android, with a Python backend handling the speech processing and AI model integration.</p>
+          <div class="cs-tags">
+            <span class="cs-pill">Figma</span>
+            <span class="cs-pill">React Native</span>
+            <span class="cs-pill">TypeScript</span>
+            <span class="cs-pill">Python</span>
+            <span class="cs-pill">SQLite</span>
+            <span class="cs-pill">Expo Go</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="cs-sidebar reveal-right">
+        <div class="cs-meta-block"><p class="cs-meta-label">Client</p><p class="cs-meta-value">Michael Rodriguez</p></div>
+        <div class="cs-meta-block"><p class="cs-meta-label">Sector</p><p class="cs-meta-value">Education</p></div>
+        <div class="cs-meta-block"><p class="cs-meta-label">Duration</p><p class="cs-meta-value">6 Weeks</p></div>
+        <div class="cs-meta-block"><p class="cs-meta-label">Role</p><p class="cs-meta-value">UI Designer & Developer</p></div>
+        <div class="cs-meta-block"><p class="cs-meta-label">Platform</p><p class="cs-meta-value">Android</p></div>
+        <div class="cs-meta-block"><p class="cs-meta-label">Year</p><p class="cs-meta-value">2025</p></div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    // Sync with main portfolio preference
+    const saved = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', saved);
+    toggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+    ['reveal','reveal-left','reveal-right'].forEach(cls => document.querySelectorAll('.'+cls).forEach(el => observer.observe(el)));
+    setTimeout(() => document.querySelectorAll('.cs-hero .reveal').forEach(el => el.classList.add('visible')), 80);
+  </script>
+  <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=SvTxIFgdrwDe"></script>
+</body>
+</html>

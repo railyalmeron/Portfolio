@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <link rel="icon" type="image/png" href="boy.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="style.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── THEME TOKENS ─── */
+    :root,
+    [data-theme="light"] {
+      --bg: #ebebea;
+      --surface: #ffffff;
+      --dark: #1a1a1a;
+      --mid: #555;
+      --muted: #999;
+      --border: #d4d4d0;
+      --green-dot: #43a047;
+      --pill-bg: #ffffff;
+      --exp-card-bg: #1a1a1a;
+      --exp-card-color: #fff;
+      --nav-bg: #ebebea;
+    }
+
+    [data-theme="dark"] {
+      --bg: #141414;
+      --surface: #1e1e1e;
+      --dark: #f0f0f0;
+      --mid: #aaa;
+      --muted: #666;
+      --border: #2e2e2e;
+      --green-dot: #4caf50;
+      --pill-bg: #252525;
+      --exp-card-bg: #f0f0f0;
+      --exp-card-color: #1a1a1a;
+      --nav-bg: #141414;
+    }
+
+    /* ─── SCROLL ANIMATIONS (slower) ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 1s cubic-bezier(.22, .68, 0, 1.1), transform 1s cubic-bezier(.22, .68, 0, 1.1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-52px);
+      transition: opacity 1s cubic-bezier(.22, .68, 0, 1.1), transform 1s cubic-bezier(.22, .68, 0, 1.1);
+    }
+
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(52px);
+      transition: opacity 1s cubic-bezier(.22, .68, 0, 1.1), transform 1s cubic-bezier(.22, .68, 0, 1.1);
+    }
+
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.84);
+      transition: opacity 0.85s cubic-bezier(.22, .68, 0, 1.1), transform 0.85s cubic-bezier(.22, .68, 0, 1.1);
+    }
+
+    .reveal-scale.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger delays */
+    .delay-1 { transition-delay: 0.10s; }
+    .delay-2 { transition-delay: 0.20s; }
+    .delay-3 { transition-delay: 0.30s; }
+    .delay-4 { transition-delay: 0.40s; }
+    .delay-5 { transition-delay: 0.50s; }
+    .delay-6 { transition-delay: 0.60s; }
+    .delay-7 { transition-delay: 0.70s; }
+    .delay-8 { transition-delay: 0.80s; }
+    .delay-9 { transition-delay: 0.90s; }
+    .delay-10 { transition-delay: 1.00s; }
+    .delay-11 { transition-delay: 1.10s; }
+    .delay-12 { transition-delay: 1.20s; }
+
+    /* ─── BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.35s, color 0.35s;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 44px; height: 62px;
+      transition: background 0.35s, border-color 0.35s;
+    }
+
+    .nav-logo { text-decoration: none; display: flex; align-items: center; }
+    .nav-logo-img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; display: block; border: 2px solid var(--dark); transition: border-color 0.35s; }
+
+    .logo-box-fallback {
+      width: 42px; height: 42px; border: 2px solid var(--dark);
+      display: grid; place-items: center; position: relative;
+      font-family: 'Syne', sans-serif; font-weight: 800; color: var(--dark); overflow: hidden;
+      transition: border-color 0.35s, color 0.35s;
+    }
+    .logo-box-fallback .logo-r { position: absolute; left: 7px; top: 50%; transform: translateY(-50%); font-style: italic; font-size: 15px; }
+    .logo-box-fallback .logo-slash { position: absolute; width: 1.5px; height: 28px; background: var(--dark); transform: rotate(18deg); left: 22px; }
+    .logo-box-fallback .logo-a { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 12px; }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--dark); font-size: 14px; font-weight: 400; transition: opacity .2s, color 0.35s; }
+    .nav-links a:hover { opacity: .5; }
+
+    .theme-toggle {
+      width: 40px; height: 40px; background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: background 0.35s, border-color 0.35s, transform 0.2s, box-shadow 0.2s; flex-shrink: 0;
+    }
+    .theme-toggle:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+    .theme-toggle svg { width: 18px; height: 18px; fill: var(--dark); transition: fill 0.35s; }
+    .icon-sun { display: none; }
+    .icon-moon { display: block; }
+    [data-theme="dark"] .icon-sun { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-linkedin {
+      width: 40px; height: 40px; background: var(--dark); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
+      flex-shrink: 0; transition: opacity .2s, background 0.35s;
+    }
+    .nav-linkedin:hover { opacity: .75; }
+    .nav-linkedin svg { fill: var(--bg); width: 20px; height: 20px; transition: fill 0.35s; }
+
+    /* ─── HERO ─── */
+    #hero { min-height: calc(100vh - 62px); display: flex; flex-direction: column; align-items: center; padding: 52px 44px 70px; }
+
+    .available-pill {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--pill-bg); border: 1.5px solid var(--border); border-radius: 50px;
+      padding: 9px 22px; font-size: 14px; font-weight: 500; color: var(--dark);
+      margin-bottom: 52px; cursor: default;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .07);
+      transition: background .22s, border-color .22s, color .22s, box-shadow .22s, transform .18s;
+      user-select: none;
+    }
+    .available-pill:hover { background: var(--dark); border-color: var(--dark); color: var(--bg); box-shadow: 0 8px 28px rgba(0, 0, 0, .2); transform: translateY(-2px); }
+    .available-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green-dot); box-shadow: 0 0 0 3px rgba(67, 160, 71, .22); flex-shrink: 0; animation: pulse 2.2s infinite; }
+    .available-pill:hover .available-dot { background: #6eef7b; box-shadow: 0 0 0 3px rgba(110, 239, 123, .3); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(67, 160, 71, .22); }
+      50% { box-shadow: 0 0 0 6px rgba(67, 160, 71, .08); }
+    }
+
+    .hero-content { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1060px; gap: 48px; }
+    .hero-text { flex: 1; min-width: 0; }
+    .hero-greeting { font-family: 'Caveat', cursive; font-size: 26px; font-weight: 600; color: var(--dark); margin-bottom: 10px; line-height: 1.2; }
+    .hero-headline { font-family: 'Inter', sans-serif; font-weight: 400; font-size: clamp(19px, 2vw, 26px); line-height: 1.5; color: var(--dark); margin-bottom: 14px; max-width: 560px; }
+    .hero-headline em { font-style: italic; font-weight: 700; font-family: 'Syne', sans-serif; }
+    .hero-sub { color: var(--mid); font-size: 13.5px; max-width: 500px; margin-bottom: 34px; line-height: 1.7; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: transform .15s, box-shadow .15s, background .2s, color .2s, border-color .2s;
+      border: 2px solid transparent; font-family: 'Inter', sans-serif;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, .14); }
+    .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .btn-dark { background: var(--dark); color: var(--bg); border-color: var(--dark); }
+    .btn-dark:hover { opacity: 0.85; }
+    .btn-outline { background: transparent; color: var(--dark); border-color: var(--dark); }
+    .btn-outline:hover { background: rgba(128, 128, 128, .08); }
+
+    .hero-image-wrap { flex-shrink: 0; width: 360px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .hero-blob { width: 330px; height: 340px; position: relative; }
+    .blob-bg { width: 100%; height: 100%; background: #111; border-radius: 55% 45% 48% 52% / 52% 48% 58% 42%; position: absolute; top: 0; left: 0; }
+    [data-theme="dark"] .blob-bg { background: #e0e0e0; }
+    .hero-photo { width: 290px; height: 300px; object-fit: cover; border-radius: 55% 45% 48% 52% / 52% 48% 58% 42%; position: absolute; top: 20px; left: 20px; display: block; pointer-events: none; }
+    .avatar-placeholder { width: 290px; height: 300px; border-radius: 55% 45% 48% 52% / 52% 48% 58% 42%; position: absolute; top: 20px; left: 20px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; overflow: hidden; }
+    .upload-frame { width: 110px; height: 110px; border: 1.5px dashed rgba(255, 255, 255, .28); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10px; }
+    .upload-frame svg { width: 28px; height: 28px; fill: none; stroke: rgba(255, 255, 255, .4); stroke-width: 1.5; }
+    .upload-label { font-size: 11px; color: rgba(255, 255, 255, .38); text-align: center; line-height: 1.45; }
+    .upload-hint { font-size: 9.5px; color: rgba(255, 255, 255, .18); letter-spacing: .06em; text-transform: uppercase; }
+    .hero-credit { font-size: 12px; color: var(--muted); font-style: italic; }
+
+    .scroll-hint { width: 28px; height: 48px; border: 2px solid rgba(128, 128, 128, .3); border-radius: 20px; margin: 44px auto 0; display: flex; justify-content: center; padding-top: 8px; }
+    .scroll-dot { width: 4px; height: 9px; background: var(--dark); border-radius: 3px; animation: scrollDown 1.7s infinite; }
+    @keyframes scrollDown {
+      0% { transform: translateY(0); opacity: 1; }
+      75% { transform: translateY(11px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 0; }
+    }
+
+    /* ─── ABOUT ─── */
+    #about { padding: 90px 44px; background: var(--surface); transition: background 0.35s; }
+    .about-inner { max-width: 1060px; margin: 0 auto; display: flex; gap: 64px; align-items: flex-start; }
+    .about-left { flex: 1; min-width: 0; }
+    .about-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(32px, 4vw, 52px); color: var(--dark); margin-bottom: 18px; line-height: 1.1; }
+    .about-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: default; letter-spacing: .01em; }
+    .badge-isfp { background: #E8F4E8; color: #2D6A2D; border: 1.5px solid #B8DDB8; }
+    .badge-virgo { background: #EDE8F8; color: #4A2D8A; border: 1.5px solid #C8B8EC; }
+    .badge-ennea { background: #FFF3E0; color: #8A4A00; border: 1.5px solid #F5C87A; }
+    [data-theme="dark"] .badge-isfp { background: #1a2e1a; color: #7ec97e; border-color: #2e5a2e; }
+    [data-theme="dark"] .badge-virgo { background: #1e1830; color: #a888e8; border-color: #3d2a70; }
+    [data-theme="dark"] .badge-ennea { background: #2a1e0a; color: #e8a844; border-color: #6a4510; }
+    .about-text p { font-size: 15.5px; color: var(--dark); line-height: 1.75; margin-bottom: 18px; }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-photo-wrap { perspective: 1200px; display: inline-block; border-radius: 14px; flex-shrink: 0; width: 300px; }
+    .about-photo { width: 100%; border-radius: 14px; display: block; transform-style: preserve-3d; transition: transform 0.15s ease, box-shadow 0.3s ease; will-change: transform; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); }
+
+    /* ─── TECH STACK ─── */
+    #techstack { padding: 80px 44px; background: var(--bg); transition: background 0.35s; }
+    .techstack-inner { max-width: 1060px; margin: 0 auto; }
+    .tech-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    .tech-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 22px 12px 18px; gap: 11px; transition: box-shadow .25s, transform .25s, border-color .25s, background 0.35s; cursor: default; }
+    .tech-item:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, .13); transform: translateY(-5px); border-color: var(--mid); }
+    .tech-item svg, .tech-item img { width: 36px; height: 36px; object-fit: contain; display: block; }
+    .tech-item span { font-size: 11.5px; font-weight: 600; color: var(--mid); letter-spacing: .02em; text-align: center; }
+
+    /* ─── EXPERIENCE ─── */
+    #experience { padding: 80px 44px; background: var(--surface); transition: background 0.35s; }
+    .exp-inner { max-width: 1060px; margin: 0 auto; }
+    .exp-card { background: var(--exp-card-bg); color: var(--exp-card-color); border-radius: 18px; padding: 40px 44px; transition: background 0.35s, color 0.35s; }
+    .exp-label { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    [data-theme="light"] .exp-label { color: rgba(255, 255, 255, .4); }
+    [data-theme="dark"] .exp-label { color: rgba(0, 0, 0, .4); }
+    .exp-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 4px; }
+    .exp-company { font-size: 15px; margin-bottom: 4px; }
+    [data-theme="light"] .exp-company { color: rgba(255, 255, 255, .55); }
+    [data-theme="dark"] .exp-company { color: rgba(0, 0, 0, .55); }
+    .exp-date { font-size: 13px; margin-bottom: 28px; }
+    [data-theme="light"] .exp-date { color: rgba(255, 255, 255, .4); }
+    [data-theme="dark"] .exp-date { color: rgba(0, 0, 0, .4); }
+    .exp-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .exp-list li { font-size: 14px; display: flex; gap: 12px; line-height: 1.6; }
+    [data-theme="light"] .exp-list li { color: rgba(255, 255, 255, .72); }
+    [data-theme="dark"] .exp-list li { color: rgba(0, 0, 0, .72); }
+    .exp-list li span.arrow { color: #4caf50; flex-shrink: 0; font-weight: 700; }
+    [data-theme="dark"] .exp-list li span.arrow { color: #1a6e20; }
+
+    /* ─── SERVICES ─── */
+    #services { padding: 80px 44px; background: var(--bg); transition: background 0.35s; }
+    .services-wrap { max-width: 1060px; margin: 0 auto; }
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .service-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 32px 28px; transition: box-shadow .2s, transform .2s, background 0.35s, border-color 0.35s; }
+    .service-card:hover { box-shadow: 0 10px 28px rgba(0, 0, 0, .09); transform: translateY(-2px); }
+    .service-icon { width: 44px; height: 44px; background: var(--dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; transition: background 0.35s; }
+    .service-icon svg { fill: var(--bg); width: 22px; height: 22px; transition: fill 0.35s; }
+    .service-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16.5px; margin-bottom: 10px; color: var(--dark); }
+    .service-card p { font-size: 13.5px; color: var(--mid); line-height: 1.7; }
+
+    /* ─── PROJECTS ─── */
+    #projects { padding: 80px 44px; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(36px, 5vw, 60px); text-align: center; margin-bottom: 52px; color: var(--dark); }
+    .projects-list { display: flex; flex-direction: column; gap: 26px; }
+
+    .project-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; display: flex; align-items: stretch; overflow: hidden; transition: box-shadow .22s, transform .22s, background 0.35s, border-color 0.35s; min-height: 320px; }
+    .project-card:hover { box-shadow: 0 14px 40px rgba(0, 0, 0, .12); transform: translateY(-3px); }
+    .project-card.reverse { flex-direction: row-reverse; }
+
+    .project-img-placeholder { width: 46%; flex-shrink: 0; flex-grow: 0; min-height: 320px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .ph-purple { background: linear-gradient(135deg, #7B2FBE 0%, #4A1580 100%); }
+    .ph-teal   { background: linear-gradient(135deg, #1A6B6B 0%, #0D3D3D 100%); }
+    .ph-amber  { background: linear-gradient(135deg, #B45309 0%, #78350F 100%); }
+
+    .project-img-placeholder img.project-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .project-img-placeholder .ph-inner { position: relative; z-index: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    .project-img-placeholder .ph-inner svg { width: 40px; height: 40px; fill: none; stroke-width: 1.5; }
+    .ph-purple .ph-inner svg { stroke: rgba(255, 255, 255, .5); }
+    .ph-teal .ph-inner svg   { stroke: rgba(255, 255, 255, .5); }
+    .ph-amber .ph-inner svg  { stroke: rgba(255, 255, 255, .5); fill: rgba(255, 255, 255, .08); }
+    .project-img-placeholder .ph-inner span { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+    .ph-purple .ph-inner span { color: rgba(255, 255, 255, .45); }
+    .ph-teal .ph-inner span   { color: rgba(255, 255, 255, .45); }
+    .ph-amber .ph-inner span  { color: rgba(255, 255, 255, .45); }
+
+    .project-body { flex: 1; min-width: 0; padding: 36px 40px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+    .project-label { font-size: 12.5px; font-weight: 500; color: var(--muted); letter-spacing: .05em; }
+    .project-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 19px; line-height: 1.35; color: var(--dark); }
+    .project-desc { font-size: 14px; color: var(--mid); line-height: 1.7; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-size: 13px; color: var(--mid); display: flex; align-items: center; gap: 4px; }
+    .tag::before { content: '•'; color: var(--dark); font-size: 14px; }
+
+    /* ── PROJECT BUTTON ROW ── */
+    .project-btns { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    /* ─── CONTACT / FOOTER ─── */
+    #contact-footer { background: var(--bg); padding: 80px 44px 0; transition: background 0.35s; }
+    .contact-top { max-width: 1060px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 64px; gap: 40px; }
+    .contact-left { max-width: 420px; }
+    .contact-heading { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(28px, 4vw, 46px); color: var(--dark); line-height: 1.1; margin-bottom: 16px; }
+    .contact-sub { font-size: 14.5px; color: var(--mid); line-height: 1.7; margin-bottom: 32px; }
+
+    .footer-grid { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1.8fr; gap: 48px; padding: 48px 0 40px; border-top: 1px solid var(--border); }
+    .footer-col-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--dark); margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a { text-decoration: none; font-size: 14px; color: var(--mid); transition: color .2s; }
+    .footer-links a:hover { color: var(--dark); }
+
+    .social-bars { display: flex; flex-direction: column; gap: 10px; }
+    .social-bar { display: flex; align-items: center; gap: 14px; padding: 13px 18px; border-radius: 12px; text-decoration: none; color: #fff; font-size: 14px; font-weight: 600; transition: transform .15s, box-shadow .15s; }
+    .social-bar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, .13); }
+    .social-bar .bar-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(0, 0, 0, .25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .social-bar .bar-icon svg { fill: #fff; width: 18px; height: 18px; }
+    .bar-linkedin  { background: linear-gradient(to right, #2a2a2a, #5a5a5a); }
+    .bar-github    { background: linear-gradient(to right, #2a2a2a, #4a4a4a); }
+    .bar-facebook  { background: linear-gradient(to right, #2a2a2a, #444); }
+    .bar-portfolio { background: linear-gradient(to right, #2a2a2a, #3a3a3a); }
+
+    .footer-bottom { max-width: 1060px; margin: 0 auto; border-top: 1px solid var(--border); padding: 22px 0; text-align: center; font-size: 13px; color: var(--muted); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .footer-grid   { grid-template-columns: 1fr 1fr; }
+      .tech-grid     { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      #hero { padding: 36px 20px 50px; }
+      .hero-content { flex-direction: column-reverse; align-items: center; gap: 32px; }
+      .hero-image-wrap { width: 100%; }
+      .hero-blob { width: 260px; height: 268px; margin: 0 auto; }
+      .hero-photo { width: 228px; height: 236px; top: 16px; left: 16px; }
+      .avatar-placeholder { width: 228px; height: 236px; top: 16px; left: 16px; }
+      #about, #experience, #services, #techstack { padding: 56px 20px; }
+      .about-inner { flex-direction: column; gap: 32px; }
+      .about-photo-wrap { width: 100%; }
+      #projects { padding: 56px 20px; }
+      .project-card, .project-card.reverse { flex-direction: column; }
+      .project-img-placeholder { width: 100%; min-height: 220px; max-height: 260px; }
+      .project-body { padding: 22px; }
+      #contact-footer { padding: 56px 20px 0; }
+      .contact-top { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; padding: 32px 0 28px; }
+      .tech-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo" aria-label="Home">
+      <img src="logo.png" alt="Raily Almeron logo" class="nav-logo-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+      <div class="logo-box-fallback" style="display:none;">
+        <span class="logo-r">R</span>
+        <span class="logo-slash"></span>
+        <span class="logo-a">A</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#techstack">Tech Stack</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact-footer">Contact</a></li>
+      <li>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke-width="2" stroke-linecap="round" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke-width="2" stroke-linecap="round" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke-width="2" stroke-linecap="round" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke-width="2" stroke-linecap="round" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="https://www.linkedin.com/in/railyalmeron/" class="nav-linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24">
+          <path d="M20.447 20.452H16.89v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.94v5.666H9.345V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a1.982 1.982 0 0 1-1.98-1.98c0-1.094.886-1.98 1.98-1.98s1.98.886 1.98 1.98-.886 1.98-1.98 1.98zm1.987 13.019H3.35V9h3.974v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 1. HERO -->
+  <section id="hero">
+    <div class="available-pill reveal">
+      <span class="available-dot"></span>
+      Available for new projects
+    </div>
+    <div class="hero-content">
+      <div class="hero-text reveal-left">
+        <p class="hero-greeting">Hi, I'm Raily Almeron</p>
+        <h1 class="hero-headline">
+          Aspiring <em>IT Professional</em> specializing in System Administration, Technical Support, Game Testing and Front-End Development.
+        </h1>
+        <p class="hero-sub">I enjoy troubleshooting issues, managing systems, testing applications and building responsive web experiences.</p>
+        <div class="hero-btns">
+          <a href="ALMERON_Resume.pdf" target="_blank" class="btn btn-dark">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z" /></svg>
+            View Resume
+          </a>
+          <a href="#contact-footer" class="btn btn-outline">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
+            Contact Me
+          </a>
+        </div>
+      </div>
+      <div class="hero-image-wrap reveal-right">
+        <div class="hero-blob">
+          <div class="blob-bg"></div>
+          <img src="zenitsu.png" alt="Raily Almeron" class="hero-photo"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="avatar-placeholder" style="display:none;" title="Add your photo here">
+            <div class="upload-frame">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span class="upload-label">Replace src="your-photo.jpg"<br>with your image filename</span>
+            </div>
+            <span class="upload-hint">illustration by awmhathif</span>
+          </div>
+        </div>
+        <span class="hero-credit">Illustration by awmhathif</span>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><div class="scroll-dot"></div></div>
+  </section>
+
+  <!-- 2. ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-left reveal-left">
+        <h2 class="about-title">About Me</h2>
+        <div class="about-badges">
+          <span class="badge badge-isfp">🧩 ISFP</span>
+          <span class="badge badge-virgo">♍ Virgo</span>
+          <span class="badge badge-ennea">✳️ Enneagram 6</span>
+        </div>
+        <div class="about-text">
+          <p>Hello! I'm Raily Almeron, a Fresh Graduate with proficiency in computer hardware and software troubleshooting, repair and system optimization, along with a basic understanding of networking and cloud computing. Skilled in Figma and Wix Studio, with experience in creating wireframes and prototyping user-friendly interfaces. Passionate gamer with a strong interest in video game testing, including bug identification and improving user experiences. Possesses strong problem-solving, communication, and teamwork skills, with a commitment to continuous learning and professional growth in the technology industry.</p>
+          <p>With a keen eye for detail and a passion for creating intuitive interfaces, I transform complex ideas into simple, elegant solutions. I believe that great design is invisible—it just works seamlessly, making users' lives easier and more enjoyable.</p>
+        </div>
+      </div>
+      <div class="about-photo-wrap reveal-right">
+        <img src="akoto.JPG" class="about-photo" alt="Raily Almeron" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TECH STACK -->
+  <section id="techstack">
+    <div class="techstack-inner">
+      <h2 class="section-title reveal" style="text-align:left; margin-bottom:36px;">Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-item reveal-scale delay-1"><img src="tech-framer.png" alt="Framer" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 24 24&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M4 0h16v8h-8zM4 8h8l8 8H4zM4 16h8v8z&quot; fill=&quot;%230055FF&quot;/&gt;&lt;/svg&gt;';" /><span>Framer</span></div>
+        <div class="tech-item reveal-scale delay-2"><img src="figma.png" alt="Figma" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 38 57&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z&quot; fill=&quot;%231ABCFE&quot;/&gt;&lt;path d=&quot;M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z&quot; fill=&quot;%230ACF83&quot;/&gt;&lt;path d=&quot;M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z&quot; fill=&quot;%23FF7262&quot;/&gt;&lt;path d=&quot;M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z&quot; fill=&quot;%23F24E1E&quot;/&gt;&lt;path d=&quot;M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z&quot; fill=&quot;%23A259FF&quot;/&gt;&lt;/svg&gt;';" /><span>Figma</span></div>
+        <div class="tech-item reveal-scale delay-3"><img src="wix.png" alt="Wix Studio" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 48 48&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect width=&quot;48&quot; height=&quot;48&quot; rx=&quot;8&quot; fill=&quot;%230C6EFC&quot;/&gt;&lt;text x=&quot;50%25&quot; y=&quot;54%25&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot; fill=&quot;%23fff&quot; font-family=&quot;Arial Black, sans-serif&quot; font-weight=&quot;900&quot; font-size=&quot;22&quot;&gt;W&lt;/text&gt;&lt;/svg&gt;';" /><span>Wix Studio</span></div>
+        <div class="tech-item reveal-scale delay-4"><img src="react native.png" alt="React Native" onerror="this.outerHTML='&lt;svg viewBox=&quot;-11.5 -10.232 23 20.463&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;circle r=&quot;2.05&quot; fill=&quot;%2361DAFB&quot;/&gt;&lt;g stroke=&quot;%2361DAFB&quot; stroke-width=&quot;1&quot; fill=&quot;none&quot;&gt;&lt;ellipse rx=&quot;11&quot; ry=&quot;4.2&quot;/&gt;&lt;ellipse rx=&quot;11&quot; ry=&quot;4.2&quot; transform=&quot;rotate(60)&quot;/&gt;&lt;ellipse rx=&quot;11&quot; ry=&quot;4.2&quot; transform=&quot;rotate(120)&quot;/&gt;&lt;/g&gt;&lt;/svg&gt;';" /><span>React Native</span></div>
+        <div class="tech-item reveal-scale delay-5"><img src="typecsript.png" alt="TypeScript" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 400 400&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect width=&quot;400&quot; height=&quot;400&quot; rx=&quot;50&quot; fill=&quot;%233178C6&quot;/&gt;&lt;/svg&gt;';" /><span>TypeScript</span></div>
+        <div class="tech-item reveal-scale delay-6"><img src="html5.png" alt="HTML5" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 452 520&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M41.4 470.6L0 0h452l-41.4 470.5L226.1 520&quot; fill=&quot;%23E44D26&quot;/&gt;&lt;/svg&gt;';" /><span>HTML5</span></div>
+        <div class="tech-item reveal-scale delay-7"><img src="tailwind.png" alt="Tailwind CSS" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 54 33&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; clip-rule=&quot;evenodd&quot; d=&quot;M27 0C19.8 0 15.3 3.6 13.5 10.8c2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C30.744 12.672 33.808 15.8 40.5 15.8c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C37.256 3.128 34.192 0 27 0zM13.5 15.8C6.3 15.8 1.8 19.4 0 26.6c2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C16.744 28.472 19.808 31.6 26.5 31.6c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C23.756 18.928 20.692 15.8 13.5 15.8z&quot; fill=&quot;%2338BDF8&quot;/&gt;&lt;/svg&gt;';" /><span>Tailwind CSS</span></div>
+        <div class="tech-item reveal-scale delay-8"><img src="css3.png" alt="CSS3" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 452 520&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M41.4 470.6L0 0h452l-41.4 470.5L226.1 520&quot; fill=&quot;%231572B6&quot;/&gt;&lt;/svg&gt;';" /><span>CSS3</span></div>
+        <div class="tech-item reveal-scale delay-9"><img src="python.png" alt="Python" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 110 110&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect width=&quot;110&quot; height=&quot;110&quot; fill=&quot;%23306998&quot;/&gt;&lt;/svg&gt;';" /><span>Python</span></div>
+        <div class="tech-item reveal-scale delay-10"><img src="github.png" alt="GitHub" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 24 24&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12&quot; fill=&quot;%231a1a1a&quot;/&gt;&lt;/svg&gt;';" /><span>GitHub</span></div>
+        <div class="tech-item reveal-scale delay-11"><img src="git.png" alt="Git" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 92 92&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;path d=&quot;M90.156 41.965L50.036 1.848a5.918 5.918 0 0 0-8.372 0L33.75 9.76l10.564 10.564a7.023 7.023 0 0 1 7.243 1.679 7.028 7.028 0 0 1 1.672 7.258l10.183 10.183a7.03 7.03 0 0 1 7.263 1.675 7.04 7.04 0 0 1 0 9.952 7.04 7.04 0 0 1-9.952 0 7.044 7.044 0 0 1-1.517-7.655L49.96 33.21v26.737a7.04 7.04 0 0 1 1.855 1.33 7.04 7.04 0 0 1 0 9.949 7.04 7.04 0 0 1-9.952 0 7.04 7.04 0 0 1 0-9.949 7.05 7.05 0 0 1 2.306-1.521V32.765a7.026 7.026 0 0 1-2.306-1.521 7.044 7.044 0 0 1-1.507-7.68L29.894 13.021 1.844 41.068a5.918 5.918 0 0 0 0 8.37l40.12 40.117a5.918 5.918 0 0 0 8.372 0l39.82-39.821a5.92 5.92 0 0 0 0-8.369z&quot; fill=&quot;%23F05032&quot;/&gt;&lt;/svg&gt;';" /><span>Git</span></div>
+        <div class="tech-item reveal-scale delay-12"><img src="expo.png" alt="Expo Go" onerror="this.outerHTML='&lt;svg viewBox=&quot;0 0 256 256&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect width=&quot;256&quot; height=&quot;256&quot; rx=&quot;48&quot; fill=&quot;%23000020&quot;/&gt;&lt;/svg&gt;';" /><span>Expo Go</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. EXPERIENCE -->
+  <section id="experience">
+    <div class="exp-inner">
+      <h2 class="section-title reveal" style="text-align:left; margin-bottom:36px;">Work Experience</h2>
+      <div class="exp-card reveal delay-1">
+        <p class="exp-label">Experience</p>
+        <h3 class="exp-role">UI Designer Intern</h3>
+        <p class="exp-company">PRIME Philippines</p>
+        <p class="exp-date">August 12 – December 12, 2025</p>
+        <ul class="exp-list">
+          <li><span class="arrow">→</span> Designed user interfaces and wireframes for PRIME Philippines and GreatWork Global</li>
+          <li><span class="arrow">→</span> Created graphics and interactive prototypes using Figma, Canva, Photoshop, and Wix Studio</li>
+          <li><span class="arrow">→</span> Designed and built the user interface for EDUCO Solutions, implementing responsive web design principles to enhance user navigation</li>
+          <li><span class="arrow">→</span> Co-developed the GreatWork Global website, translating wireframes into functional web pages while optimizing cross-browser compatibility</li>
+          <li><span class="arrow">→</span> Collaborated with cross-functional development teams to translate Figma interactive prototypes into responsive front-end code, ensuring high fidelity to the original designs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SERVICES -->
+  <section id="services">
+    <div class="services-wrap">
+      <h2 class="section-title reveal" style="text-align:left; margin-bottom:36px;">Services</h2>
+      <div class="services-grid">
+        <div class="service-card reveal delay-1">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" /></svg></div>
+          <h3>UI & Wireframing Design</h3>
+          <p>End-to-end interface design from low-fidelity wireframes to polished, pixel-perfect mockups using Figma, Canva, and Wix Studio. Focused on user-centered flows that are intuitive and conversion-ready.</p>
+        </div>
+        <div class="service-card reveal delay-2">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" /></svg></div>
+          <h3>Front-End Web & Mobile Development</h3>
+          <p>Translating Figma designs into responsive, cross-browser-compatible products using HTML, CSS, JavaScript, TypeScript, ReactJS, React Native, and Tailwind CSS.</p>
+        </div>
+        <div class="service-card reveal delay-3">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg></div>
+          <h3>Quality Assurance (QA) & Game Testing</h3>
+          <p>Manual testing, bug identification and reporting, regression testing, and game QA — ensuring products are stable, performant, and deliver a smooth user experience before release.</p>
+        </div>
+        <div class="service-card reveal delay-4">
+          <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z" /></svg></div>
+          <h3>IT Support & System Administration</h3>
+          <p>Hardware troubleshooting, software repair, system optimization, networking basics — keeping systems running smoothly for individuals and small teams.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. FEATURED PROJECTS -->
+  <section id="projects">
+    <h2 class="section-title reveal">Featured Projects</h2>
+    <div class="projects-list">
+
+      <!-- PROJECT 1: PubSpeaker -->
+      <article class="project-card reveal delay-1" id="pubspeaker">
+        <div class="project-img-placeholder ph-purple">
+          <img src="project-pubspeaker.png" alt="PubSpeaker mobile app screenshot" class="project-img" onerror="this.remove();" />
+          <div class="ph-inner">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12" y2="18" /></svg>
+            <span>Mobile App</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <span class="project-label">Case Study 01</span>
+          <h3 class="project-title">PubSpeaker: A Mobile Application for Enhancing Public Speaking through AI-Driven Feedback</h3>
+          <p class="project-desc">An AI-driven mobile app that transcribes speech in real-time, generates concise summaries, and provides personalized feedback on pronunciation and grammar. Users can review session history and track progress to enhance communication skills.</p>
+          <div class="project-tags">
+            <span class="tag">Figma</span>
+            <span class="tag">React Native</span>
+            <span class="tag">Python</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">Expo Go</span>
+            <span class="tag">TypeScript</span>
+          </div>
+          <div class="project-btns">
+            <a href="https://drive.google.com/file/d/1iQetQP3-VNjQ8vmks5sNSJrSmk0CGKCz/view?usp=sharing"
+              target="_blank" rel="noopener noreferrer" class="btn btn-dark">
+              Get The App
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+            <a href="pubspeaker.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              View Case Study
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 2: Educo Solutions -->
+      <article class="project-card reverse reveal delay-2" id="cvcraft">
+        <div class="project-img-placeholder ph-teal">
+          <img src="#" alt="Educo Solutions website screenshot" class="project-img" onerror="this.remove();" />
+          <div class="ph-inner">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+            <span>Web App</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <span class="project-label">Case Study 02</span>
+          <h3 class="project-title">Educo Solutions: A Trusted Global Employer of Record and Offshore Team Builder</h3>
+          <p class="project-desc">A professional workforce solutions provider designed to help international businesses legally hire, pay, and manage remote talent in the Philippines. It delivers comprehensive recruitment, payroll administration, and local labor compliance management.</p>
+          <div class="project-tags">
+            <span class="tag">Wix Studio</span>
+          </div>
+          <div class="project-btns">
+            <a href="https://www.educosolutions.ph/" target="_blank" rel="noopener noreferrer" class="btn btn-dark">
+              View Live Website
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+            <a href="educo.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              View Case Study
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- PROJECT 3: GreatWork -->
+      <article class="project-card reveal delay-3" id="xomayhem">
+        <div class="project-img-placeholder ph-amber">
+          <img src="#" alt="GreatWork Global website screenshot" class="project-img" onerror="this.remove();" />
+          <div class="ph-inner">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+            <span>Web App</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <span class="project-label">Case Study 03</span>
+          <h3 class="project-title">GreatWork: A Premium Flexible Workspace and Tech-Powered Office Provider</h3>
+          <p class="project-desc">A modern workspace solutions partner designed to help local startups and global enterprises establish a physical presence in the Philippines. It delivers fully equipped private suites, co-working desks, and virtual office addresses in premium commercial locations.</p>
+          <div class="project-tags">
+            <span class="tag">Wix Studio</span>
+          </div>
+          <div class="project-btns">
+            <a href="https://www.greatworkglobal.com/" target="_blank" rel="noopener noreferrer" class="btn btn-dark">
+              View Live Website
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+            <a href="greatwork.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+              View Case Study
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 7. CONTACT + FOOTER -->
+  <section id="contact-footer">
+    <div class="contact-top">
+      <div class="contact-left reveal-left">
+        <h2 class="contact-heading">Let's Work Together</h2>
+        <p class="contact-sub">Have a project in mind? I'd love to hear about it and discuss how we can collaborate to create something amazing.</p>
+        <a href="mailto:yliarnoremla@gmail.com" class="btn btn-outline">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="reveal delay-1">
+        <p class="footer-col-title">Navigation</p>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#techstack">Tech Stack</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact-footer">Contact</a></li>
+        </ul>
+      </div>
+      <div class="reveal delay-2">
+        <p class="footer-col-title">Case Studies</p>
+        <ul class="footer-links">
+          <li><a href="pubspeaker-case-study.html">PubSpeaker</a></li>
+          <li><a href="educo-case-study.html">Educo Solutions</a></li>
+          <li><a href="greatwork-case-study.html">GreatWork</a></li>
+        </ul>
+      </div>
+      <div class="reveal delay-3">
+        <p class="footer-col-title">Elsewhere</p>
+        <div class="social-bars">
+          <a href="https://www.linkedin.com/in/railyalmeron/" target="_blank" rel="noopener" class="social-bar bar-linkedin">
+            <div class="bar-icon"><svg viewBox="0 0 24 24"><path d="M20.447 20.452H16.89v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.447-2.136 2.94v5.666H9.345V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a1.982 1.982 0 0 1-1.98-1.98c0-1.094.886-1.98 1.98-1.98s1.98.886 1.98 1.98-.886 1.98-1.98 1.98zm1.987 13.019H3.35V9h3.974v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg></div>
+            LinkedIn
+          </a>
+          <a href="https://github.com/railyalmeron" target="_blank" rel="noopener" class="social-bar bar-github">
+            <div class="bar-icon"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg></div>
+            GitHub
+          </a>
+          <a href="https://www.facebook.com/fvckfb2022" target="_blank" rel="noopener" class="social-bar bar-facebook">
+            <div class="bar-icon"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg></div>
+            Facebook
+          </a>
+          <a href="#" target="_blank" rel="noopener" class="social-bar bar-portfolio">
+            <div class="bar-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg></div>
+            Portfolio
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 Raily Almeron. All rights reserved.
+    </div>
+  </section>
+
+  <script>
+    /* ── DARK MODE ── */
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    if (saved) html.setAttribute('data-theme', saved);
+    toggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    /* ── ABOUT PHOTO 3D TILT ── */
+    const photo = document.querySelector(".about-photo");
+    if (photo) {
+      photo.addEventListener("mousemove", (e) => {
+        const rect = photo.getBoundingClientRect();
+        const rotateX = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -10;
+        const rotateY = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 10;
+        photo.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+      });
+      photo.addEventListener("mouseleave", () => {
+        photo.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)`;
+      });
+    }
+
+    /* ── SCROLL REVEAL ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -50px 0px' });
+
+    ['reveal', 'reveal-left', 'reveal-right', 'reveal-scale'].forEach(cls => {
+      document.querySelectorAll('.' + cls).forEach(el => observer.observe(el));
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll('#hero .reveal, #hero .reveal-left, #hero .reveal-right').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 120);
+  </script>
+  <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=SvTxIFgdrwDe"></script>
+</body>
+</html>
